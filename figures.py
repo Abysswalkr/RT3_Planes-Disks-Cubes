@@ -62,3 +62,33 @@ class Sphere(Shape):
                          texCoords= [u,v]
                          )
 
+class Plane(Shape):
+    def __init__(self, position, normal, material):
+        super().__init__(position, material)
+        self.normal = normalize_vector(normal)
+        self.type = "Plane"
+
+    def ray_intersect(self, orig, dir):
+        # distancia = ((planePos - rayOrig) o normal) / (rayDir o normal)
+        denom = dot(dir, self.normal)
+
+        if isclose(0, denom):
+            return None
+
+        num = dot(sub_elements(self.position, orig), self.normal)
+        t = num / denom
+
+        if t < 0:
+            return None
+
+        # P orig + dir * t0
+        P = sum_elements(orig, scalar_multiply(t, dir))
+
+        return Intercept(point=P,
+                         normal=self.normal,
+                         distance=t,
+                         texCoords=None,
+                         rayDirection=dir,
+                         obj=self)
+
+
