@@ -19,7 +19,7 @@ class Sphere(Shape):
         self.radius = radius
         self.type = "Sphere"
 
-    def rayIntersect(self, origin, direction):
+    def ray_intersect(self, origin, direction):
         distance_vect = sub_elements(self.position, origin)
         tca = dot(distance_vect, direction)
 

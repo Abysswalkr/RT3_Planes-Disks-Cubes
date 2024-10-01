@@ -7,8 +7,8 @@ from lights import *
 from texture import Texture
 
 # Configuración de pantalla
-width =  400
-height = 216
+width =  512
+height = 512
 
 screen = pygame.display.set_mode((width, height), pygame.SCALED )
 clock = pygame.time.Clock()
@@ -40,10 +40,10 @@ rt.lights.append(DirectionalLight(direction=[0, 0, -1], intensity=1.0))  # Luz d
 rt.lights.append(AmbientLight(intensity=0.5))  # Luz ambiental débil
 
 
-#rt.scene.append( Sphere(position = [0, 0 , -5], radius = 1, material = brick) )
-# #rt.scene.append( Plane(position = [0,-2, -5], normal = [0,1,0], material = brick ))
-# #rt.scene.append( Disk(position = [0, -1, -5], normal = [0,1,0], radius = 1.5, material = mirror))
-# rt.scene.append( AABB(position = [0,0,-5], sizes = [1,1,1], material = brick))
+rt.scene.append( Sphere(position = [0, 0 , -5], radius = 1, material = brick) )
+rt.scene.append( Plane(position = [0,-2, -5], normal = [0,1,0], material = brick ))
+rt.scene.append( Disk(position = [0, -1, -5], normal = [0,1,0], radius = 1.5, material = mirror))
+rt.scene.append( AABB(position = [0,0,-5], sizes = [1,1,1], material = brick))
 
 # Renderizado de la escena
 rt.glRender()

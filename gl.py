@@ -144,7 +144,7 @@ class RendererRT(object):
 
         for object in self.scene:
             if object != sceneObj:
-                intersection = object.rayIntersect(origin, direction)
+                intersection = object.ray_intersect(origin, direction)
                 if intersection is not None:
                     if intersection.distance < minDist:
                         impact = intersection
