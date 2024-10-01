@@ -112,4 +112,81 @@ class Disk(Plane):
 
         return planeIntercept
 
+class AABB(Shape):
+    # Axis-Aligned Bounding Box
+    def __init__(self, position, sizes, material):
+        super().__init__(position, material)
+        self.sizes = sizes
+        self.type = "AABB"
 
+        self.planes = []
+
+        rightPlane = Plane([position[0] + sizes[0] / 2, position[1], position[2]], [1, 0, 0], material)
+        leftPlane = Plane([position[0] - sizes[0] / 2, position[1], position[2]], [-1, 0, 0], material)
+        upPlane = Plane([position[0], position[1] + sizes[1] / 2, position[2]], [0, 1, 0], material)
+        downPlane = Plane([position[0], position[1] - sizes[1] / 2, position[2]], [0, -1, 0], material)
+        frontPlane = Plane([position[0], position[1], position[2] + sizes[2] / 2], [0, 0, 1], material)
+        backPlane = Plane([position[0], position[1], position[2] - sizes[2] / 2], [0, 0, -1], material)
+
+        self.planes.append(rightPlane)
+        self.planes.append(leftPlane)
+        self.planes.append(upPlane)
+        self.planes.append(downPlane)
+        self.planes.append(frontPlane)
+        self.planes.append(backPlane)
+
+        # Bounds
+        self.boundsMin = [0, 0, 0]
+        self.boundsMax = [0, 0, 0]
+
+        epsilon = 0.001
+
+        for i in range(3):
+            self.boundsMin[i] = position[i] - (epsilon + sizes[i] / 2)
+            self.boundsMax[i] = position[i] + (epsilon + sizes[i] / 2)
+
+    def ray_intersect(self, orig, dir):
+
+        intercept = None
+        t = float("inf")
+
+        for plane in self.planes:
+            planeIntercept = plane.ray_intersect(orig, dir)
+
+            if planeIntercept is not None:
+
+                planePoint = planeIntercept.point
+
+                if self.boundsMin[0] <= planePoint[0] <= self.boundsMax[0]:
+                    if self.boundsMin[1] <= planePoint[1] <= self.boundsMax[1]:
+                        if self.boundsMin[2] <= planePoint[2] <= self.boundsMax[2]:
+                            if planeIntercept.distance < t:
+                                t = planeIntercept.distance
+                                intercept = planeIntercept
+
+        if intercept is None:
+            return None
+
+        u, v = 0, 0
+        if abs(intercept.normal[0]) > 0:
+            # Mapear las uvs para el eje x, usando las coordenadas de Y y Z
+            u = (intercept.point[1] - self.boundsMin[1]) / self.sizes[1]
+            v = (intercept.point[2] - self.boundsMin[2]) / self.sizes[2]
+
+        elif abs(intercept.normal[1]) > 0:
+            u = (intercept.point[0] - self.boundsMin[0]) / self.sizes[0]
+            v = (intercept.point[2] - self.boundsMin[2]) / self.sizes[2]
+
+        elif abs(intercept.normal[2]) > 0:
+            u = (intercept.point[0] - self.boundsMin[0]) / self.sizes[0]
+            v = (intercept.point[1] - self.boundsMin[1]) / self.sizes[1]
+
+        u = min(0.999, max(0, u))
+        v = min(0.999, max(0, u))
+
+        return Intercept(point=intercept.point,
+                         normal=intercept.normal,
+                         distance=t,
+                         texCoords=[u, v],
+                         rayDirection=dir,
+                         obj=self)
