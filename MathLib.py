@@ -169,3 +169,8 @@ def sum_elements(v1, v2):
     if len(v1) != len(v2):
         raise ValueError("Las listas deben tener la misma longitud.")
     return [a + b for a, b in zip(v1, v2)]
+
+
+# Multiplicación escalar-vector
+def scalar_multiply(scalar, v):
+    return [scalar * comp for comp in v]
