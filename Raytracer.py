@@ -39,14 +39,11 @@ holograma = Material(texture = Texture('Textures/holograma.bmp'), spec=128, Ks=0
 rt.lights.append(DirectionalLight(direction=[0, 0, -1], intensity=1.0))  # Luz desde abajo hacia arriba
 rt.lights.append(AmbientLight(intensity=0.5))  # Luz ambiental débil
 
-# Creación de 6 esferas en 2 filas (3 arriba, 3 abajo)
-rt.scene.append(Sphere(position=[-1.5, 1, -3], radius=0.5, material=bubuja))      # Esfera 1 (arriba izquierda) (reflective)
-rt.scene.append(Sphere(position=[-1.5, -1, -3], radius=0.5, material=mandala))     # Esfera 4 (abajo izquierda) (reflective)
-rt.scene.append(Sphere(position=[0, 1, -3], radius=0.5, material=vidrio))         # Esfera 2 (arriba centro) (reflective)
-rt.scene.append(Sphere(position=[0, -1, -3], radius=0.5, material=glass))        # Esfera 5 (abajo centro) (reflective)
-rt.scene.append(Sphere(position=[1.5, 1, -3], radius=0.5, material=reptil))    # Esfera 3 (arriba derecha) (opaque)
-rt.scene.append(Sphere(position=[1.5, -1, -3], radius=0.5, material=holograma))      # Esfera 6 (abajo derecha) (opaque)
-#rt.scene.append(Sphere(position=[0, 0, -3], radius=1, material=glass))            # Esfera grande en el centro
+
+#rt.scene.append( Sphere(position = [0, 0 , -5], radius = 1, material = brick) )
+# #rt.scene.append( Plane(position = [0,-2, -5], normal = [0,1,0], material = brick ))
+# #rt.scene.append( Disk(position = [0, -1, -5], normal = [0,1,0], radius = 1.5, material = mirror))
+# rt.scene.append( AABB(position = [0,0,-5], sizes = [1,1,1], material = brick))
 
 # Renderizado de la escena
 rt.glRender()
