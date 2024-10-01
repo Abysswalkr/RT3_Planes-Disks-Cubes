@@ -1,6 +1,6 @@
 from intercept import Intercept
 from MathLib import *
-from math import tan, pi, atan2, acos
+from math import tan, pi, atan2, acos, isclose
 
 
 class Shape(object):
