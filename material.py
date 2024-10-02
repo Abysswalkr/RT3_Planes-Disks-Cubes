@@ -6,22 +6,6 @@ OPAQUE = 0
 REFLECTIVE = 1
 TRANSPARENT = 2
 
-# Producto punto entre dos vectores
-def dot_product(v1, v2):
-    return sum(v1[i] * v2[i] for i in range(len(v1)))
-
-# Suma de vectores
-def vector_add(v1, v2):
-    return [v1[i] + v2[i] for i in range(len(v1))]
-
-# Resta de vectores
-def vector_subtract(v1, v2):
-    return [v1[i] - v2[i] for i in range(len(v1))]
-
-# Multiplicación escalar-vector
-def scalar_multiply(scalar, v):
-    return [scalar * comp for comp in v]
-
 class Material(object):
     def __init__(self, difuse=[1,1,1], spec=1.0, Ks=0.0, ior=1.0, matType=OPAQUE, texture=None):
         self.difuse = difuse
