@@ -84,6 +84,9 @@ class Plane(Shape):
         # P orig + dir * t0
         P = sum_elements(orig, scalar_multiply(t, dir))
 
+        u = (P[0] - self.position[0]) % 1
+        v = (P[1] - self.position[1]) % 1
+
         return Intercept(point=P,
                          normal=self.normal,
                          distance=t,
