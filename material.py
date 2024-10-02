@@ -1,5 +1,6 @@
 from gl import *
 from refracctionFunctions import *
+from mathlib import *
 
 OPAQUE = 0
 REFLECTIVE = 1
@@ -46,10 +47,22 @@ class Material(object):
 
         for light in renderer.lights:
             shadowIntercept = None
+            lightDir = None
 
             if light.lighType == "Directional":
                 lightDir = [-i for i in light.direction]
+
+
+            elif light.lighType == "Point":
+                lightDir = sub_elements(light.position, intercept.point)  # Utilizando función de mathlib
+                R = vector_magnitude(lightDir)  # Utilizando función de mathlib
+                lightDir = scalar_multiply(1 / R, lightDir)  # Normalizando el vector
+
                 shadowIntercept = renderer.glCastRay(intercept.point, lightDir, intercept.obj)
+
+                if shadowIntercept:
+                    if shadowIntercept.distance >= R:
+                        shadowIntercept = None
 
             if shadowIntercept is None:
                 lightColor = [(lightColor[i] + light.GetSpecularColor(intercept, renderer.camera.translate)[i]) for i in range(3)]
