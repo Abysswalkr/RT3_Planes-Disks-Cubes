@@ -1,4 +1,6 @@
-from MathLib import *
+from math import pi, cos
+from gl import *
+from mathlib import *
 
 
 class Light(object):
@@ -51,6 +53,7 @@ class DirectionalLight(Light):
 
         return specColor
 
+
 class PointLight(Light):
     def __init__(self, color=[1, 1, 1], intensity=1, position=[0, 0, 0]):
         super().__init__(color, intensity)
@@ -101,3 +104,48 @@ class PointLight(Light):
             specColor = [i * specularity for i in specColor]
 
         return specColor
+
+
+class SpotLight(PointLight):
+    def __init__(self, color=[1, 1, 1], intensity=1, position=[0, 0, 0], direction=[0, -1, 0], innerAngle=50, outerAngle=60):
+        super().__init__(color, intensity, position)
+        self.direction = normalize_vector(direction)  # Normalizar la dirección
+        self.innerAngle = innerAngle
+        self.outerAngle = outerAngle
+        self.lighType = "Spot"
+
+    def GetLightColor(self, intercept=None):
+        lightColor = super().GetLightColor(intercept)
+
+        if intercept is not None:
+            lightColor = [i * self.SpotlightAttenuation(intercept) for i in lightColor]
+
+        return lightColor
+
+    def GetSpecularColor(self, intercept, viewPos):
+        specularColor = super().GetSpecularColor(intercept, viewPos)
+
+        if intercept is not None:
+            specularColor = [i * self.SpotlightAttenuation(intercept) for i in specularColor]
+
+        return specularColor
+
+    def SpotlightAttenuation(self, intercept=None):
+        if intercept is None:
+            return 0
+
+        # Direccion desde el punto de luz al punto de intercepción
+        wi = sub_elements(self.position, intercept.point)
+        wi = normalize_vector(wi)  # Normalizar el vector de dirección
+
+        # Convertir los ángulos a radianes
+        innerAngleRads = self.innerAngle * pi / 180
+        outerAngleRads = self.outerAngle * pi / 180
+
+        # Cálculo de la atenuación basado en el ángulo del spotlight
+        attenuation = (-dot(self.direction, wi) - cos(outerAngleRads)) / (cos(innerAngleRads) - cos(outerAngleRads))
+
+        # Asegurarse de que la atenuación esté entre 0 y 1
+        attenuation = min(1, max(0, attenuation))
+
+        return attenuation
