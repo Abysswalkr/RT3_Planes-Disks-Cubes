@@ -50,3 +50,54 @@ class DirectionalLight(Light):
             specColor = [(i * specularity) for i in specColor]
 
         return specColor
+
+class PointLight(Light):
+    def __init__(self, color=[1, 1, 1], intensity=1, position=[0, 0, 0]):
+        super().__init__(color, intensity)
+        self.position = position
+        self.lighType = "Point"
+
+    def GetLightColor(self, intercept=None):
+        lightColor = super().GetLightColor(intercept)
+
+        if intercept:
+            dir = sub_elements(self.position, intercept.point)
+            R = sum([comp ** 2 for comp in dir]) ** 0.5  # Magnitud de la dirección
+            dir = [comp / R for comp in dir]  # Normalización
+
+            intensity = dot(intercept.normal, dir)
+            intensity = max(0, min(1, intensity))
+            intensity *= (1 - intercept.obj.material.Ks)
+            intensity *= self.intensity
+
+            # Ley de cuadrados inversos
+            if R != 0:
+                intensity /= R ** 2
+
+            lightColor = [i * intensity for i in lightColor]
+
+        return lightColor
+
+    def GetSpecularColor(self, intercept, viewPos):
+        specColor = self.color
+
+        if intercept:
+            dir = sub_elements(self.position, intercept.point)
+            R = sum([comp ** 2 for comp in dir]) ** 0.5  # Magnitud de la dirección
+            dir = [comp / R for comp in dir]  # Normalización
+
+            reflect = calc_reflection(intercept.normal, dir)
+
+            viewDir = sub_elements(viewPos, intercept.point)
+            viewDir = normalize_vector(viewDir)
+
+            specularity = max(0, dot(viewDir, reflect) ** intercept.obj.material.spec)
+            specularity *= intercept.obj.material.Ks
+            specularity *= self.intensity
+
+            if R != 0:
+                specularity /= R ** 2
+
+            specColor = [i * specularity for i in specColor]
+
+        return specColor
