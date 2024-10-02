@@ -174,3 +174,8 @@ def sum_elements(v1, v2):
 # Multiplicación escalar-vector
 def scalar_multiply(scalar, v):
     return [scalar * comp for comp in v]
+
+
+#Calcula la magnitud (longitud) de un vector.
+def vector_magnitude(v):
+       return sum(comp ** 2 for comp in v) ** 0.5
